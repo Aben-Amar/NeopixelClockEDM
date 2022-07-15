@@ -30,19 +30,20 @@ decena_minu = neopixel.NeoPixel(pin_decena_minuto, num_pixels_dm, brightness=1, 
 #programa principal
 def principal():
     #vemos la hora de pc y separamos por digito
-    digito_horad = int(datetime.now().hour / 10)
-    digito_horau = datetime.now().hour % 10
-    digito_minud = int(datetime.now().minute / 10)
-    digito_minuu = datetime.now().minute % 10
+    digito_horad = int(horario_cerrado[0] / 10) - int(datetime.now().hour / 10) 
+    digito_horau = (horario_cerrado[0] % 10) - (datetime.now().hour % 10)
+    digito_minud = int(horario_cerrado[1] / 10) - int(datetime.now().minute / 10)
+    digito_minuu = (horario_cerrado[1] % 10) - (datetime.now().minute % 10)
     # Impresion de datos, solo para verificar
     print(digito_horad, digito_horau, digito_minud, digito_minuu)
     
     # Llamamos a la funcion de imprimir e imprimimos el digito en el puerto
     siete_segmentos(digito_horad, decena_hora, 0)
     siete_segmentos(digito_horau, decena_hora, 7)
+    decena_hora.show()
     siete_segmentos(digito_minud, decena_minu, 0)
     siete_segmentos(digito_minuu, decena_minu, 7)
-    
+    decena_minu.show()
     # establecemos nivel de barra led de acuerdo con el horario
     hora_i = horario_inicio[0] + horario_inicio[1]/60
     hora_f = horario_cerrado[0] + horario_cerrado[1]/60
@@ -57,7 +58,9 @@ def principal():
     print(porcentaje)
     
     # Llamamos a la funcion de imprimir e imprimimos el digito en el puerto
-    
+    porcentaje_aumento = num_pixels_ba * porcentaje / 100 
+    barra_aumento = neopixel.NeoPixel(pin_barra_aumento, porcentaje_aumento, brightness=1, auto_write=True, pixel_order=ORDER)
+    barra_aumento.fill((0,255,0))
     
 # Para esta funcion cada chip es un segmento
 # Solicita el numero y el pin de salida
@@ -174,6 +177,6 @@ def siete_segmentos(val,pixel,num):
         pixel[5+num] = (0,0,0)
         pixel[6+num] = (0,0,0)
         print("e")
-        
-principal()
-print(decena_hora)
+
+while True:
+    principal()
